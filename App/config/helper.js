@@ -33,7 +33,7 @@ let adminCreate=async ()=>{
   let adminData=await adminModel.find()
   const hash = bcrypt.hashSync("harsh123", saltRounds);
   if(adminData.length===0){
-      adminModel.insertOne(
+      await adminModel.create(
       {
         email:"harshdahiya3766@gmail.comm",
         password: hash

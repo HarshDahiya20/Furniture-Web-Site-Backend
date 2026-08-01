@@ -20,7 +20,7 @@ let materialCreate=async (req,res)=>{
                 res.send(obj)
             }
             else{
-                let material = await materialModel.insertOne(req.body)
+                let material = await materialModel.create(req.body)
     
                 let obj={
                     _status:true,
@@ -35,12 +35,14 @@ let materialCreate=async (req,res)=>{
         catch(err){
     
             let error=[]
-            for(let key in err.errors){
-    
-                let obj={}
-                obj[key]=err.errors[key].message
-                error.push(obj)
-        
+            if (err.errors) {
+                for(let key in err.errors){
+                    let obj={}
+                    obj[key]=err.errors[key].message
+                    error.push(obj)
+                }
+            } else {
+                error.push({ general: err.message })
             }
             // console.log(error);
             
@@ -75,7 +77,7 @@ let materialDelete=(req,res)=>{
     
         materialModel.updateMany(
             {
-                _id:ids
+                _id: { $in: ids }
             },
             {
                 $set:{
@@ -106,7 +108,7 @@ let materialChangeStatus=async (req,res)=>{
     let {ids}=req.body;
     
         await materialModel.updateMany(
-            {_id:ids},
+            {_id: { $in: ids }},
             [
                 {
                     $set:{

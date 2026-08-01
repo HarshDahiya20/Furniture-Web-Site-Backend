@@ -32,7 +32,7 @@ App.use("/uploads/testimonial",express.static("uploads/testimonial"))
 
 App.use("/web-api",webRoute)
 
-mongoose.connect(`mongodb://127.0.0.1:27017/${process.env.DBNAME}`)
+mongoose.connect(`${process.env.DBNAME}`)
 .then((res)=>{
     App.listen(process.env.PORT, async ()=>{
       console.log(process.env.PORT);
