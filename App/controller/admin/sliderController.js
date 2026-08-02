@@ -87,6 +87,7 @@ let sliderView=async (req,res)=>{
         path:process.env.SLIDERPATH,
         data
     }
+    
     res.send(obj)
 }
 

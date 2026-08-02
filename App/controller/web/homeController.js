@@ -68,6 +68,8 @@ let getSlider = async (req, res) => {
         path: process.env.SLIDERPATH,
         data
     }
+    console.log(process.env.SLIDERPATH);
+    
     res.send(obj)
 }
 
