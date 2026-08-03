@@ -1,4 +1,5 @@
 const orderModel = require("../../model/orderModel");
+const cartModel = require("../../model/cartModel");
 const mongoose = require("mongoose");
 let crypto = require("crypto");
 const Razorpay = require("razorpay");
@@ -20,7 +21,7 @@ let saveOrder = async (req, res) => {
       let order = await orderModel.insertOne(orderData);
 
       //User userID for Clear Cart
-      //   await cartModel.deleteOne({ userId: req.body.userId });
+      await cartModel.deleteMany({ _UserId: req.body._UserId });
 
       res
         .status(200)
@@ -79,7 +80,7 @@ let verfiyPayment = async (req, res) => {
 
   if (expectedSign === razorpay_signature) {
     //Payment Success
-    await orderModel.updateOne(
+    let updatedOrder = await orderModel.findOneAndUpdate(
       { razorpayOrderId: razorpay_order_id },
       {
         $set: {
@@ -88,8 +89,11 @@ let verfiyPayment = async (req, res) => {
           orderStatus: "process",
         },
       },
+      { new: true }
     );
-    // await cartModel.deleteMany({ userId: req.body.userId });
+    if (updatedOrder) {
+      await cartModel.deleteMany({ _UserId: updatedOrder.userId });
+    }
     res
       .status(200)
       .json({ _status: true, _message: "Payment verified successfully" });
